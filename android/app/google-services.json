@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "591442876977",
+    "firebase_url": "https://hackin-23780.firebaseio.com",
+    "project_id": "hackin-23780",
+    "storage_bucket": "hackin-23780.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:591442876977:android:c30864dc461de1dae21310",
+        "android_client_info": {
+          "package_name": "com.example.hackin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "591442876977-5cjuevmf2vdel0qtiqvoht9r3dm10r36.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCAlRSLJ48fBvF92jEZiI5Y2MzdM0JL39k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "591442876977-5cjuevmf2vdel0qtiqvoht9r3dm10r36.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
