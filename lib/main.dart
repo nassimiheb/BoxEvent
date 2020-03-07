@@ -1,15 +1,29 @@
-
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_beautiful_popup/main.dart';
+import 'package:hackin/pages/details_page.dart';
+import 'package:hackin/pages/details_page_participant.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
 
 import 'package:qrscan/qrscan.dart' as scanner;
 
+import 'src/SearchBar.dart';
+
 void main() {
-  runApp(MyApp());
+  runApp(App());
+}
+
+class App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+      home: MyApp(),
+    );
+  }
 }
 
 class MyApp extends StatefulWidget {
@@ -25,6 +39,52 @@ class _MyAppState extends State<MyApp> {
       "https://avatars3.githubusercontent.com/u/16825392?s=460&v=4";
   String otherProfilePic =
       "https://yt3.ggpht.com/-2_2skU9e2Cw/AAAAAAAAAAI/AAAAAAAAAAA/6NpH9G8NWf4/s900-c-k-no-mo-rj-c0xffffff/photo.jpg";
+  createPopUp(BuildContext context) {
+    final popup = BeautifulPopup(
+      context: context,
+      template: TemplateAuthentication,
+    );
+    popup.show(
+      title: 'Remarque',
+      content:
+          'Le scanne du Code QR est bien effectuer. Voulez-vous confirmer ? ( Cette action est irriversible )',
+      actions: [
+        popup.button(
+          label: 'NON',
+          onPressed: Navigator.of(context).pop,
+        ),
+        popup.button(
+          label: 'OUI',
+          onPressed: Navigator.of(context).pop,
+        ),
+      ],
+      // bool barrierDismissible = false,
+      // Widget close,
+    );
+  }
+
+  createPopUpFaux(BuildContext context) {
+    final popup = BeautifulPopup(
+      context: context,
+      template: TemplateAuthentication,
+    );
+    popup.show(
+      title: 'Confirmation',
+      content: '',
+      actions: [
+        popup.button(
+          label: 'NON',
+          onPressed: Navigator.of(context).pop,
+        ),
+        popup.button(
+          label: 'OUI',
+          onPressed: Navigator.of(context).pop,
+        ),
+      ],
+      // bool barrierDismissible = false,
+      // Widget close,
+    );
+  }
 
   @override
   initState() {
@@ -43,12 +103,113 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+
+
+
+
+ Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
+    final record = Record.fromSnapshot(data);
+
+    return 
+       
+    
+     GestureDetector(
+       child:  Container(
+        padding: EdgeInsets.all(10),
+       decoration: BoxDecoration(
+         border: Border(bottom: BorderSide(width: 0.5,color: Colors.grey))
+         
+       ),
+       child: Row(
+         children:<Widget>[
+            Center(
+              child: Container(
+                  height: 100,
+                  width: 100,
+                  child: CircleAvatar(
+                    backgroundColor: Colors.brown.shade800,
+                    child: Text('AH'),
+                  ))),
+          
+          Container(
+            margin: EdgeInsets.only(left:20),
+            child:Column(
+         crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            
+            Row(children: <Widget>[
+              Icon(Icons.person),
+              SizedBox(width: 4,),
+              Text(record.nom,style: TextStyle(fontWeight: FontWeight.w500),)
+            ]),
+            Row(children: <Widget>[
+              Icon(Icons.person,color: Colors.grey,),
+              SizedBox(width: 4,),
+              Text(record.role,style: TextStyle(color: Colors.grey),)
+            ]),
+            Row(children: <Widget>[
+              Icon(Icons.person,color: Colors.grey,),
+              SizedBox(width: 4,),
+              Text(record.status,style: TextStyle(color: Colors.grey),)
+            ]),Row(children: <Widget>[
+              Icon(Icons.school,color: Colors.grey,),
+              SizedBox(width: 4,),
+              Text(record.organization,style: TextStyle(color: Colors.grey),)
+            ])
+          ],))
+       ])
+   ),
+       onTap: (){
+         print(record.nom);
+          Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                            details_participant(nom: record.nom,)
+                                ),
+                      );
+       },)
+     ;
+  }  
+ 
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+
+Widget _buildBody(BuildContext context) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: Firestore.instance.collection('Participants').snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return LinearProgressIndicator();
+
+        return _buildList(context, snapshot.data.documents);
+      },
+    );
+  }
+
+
+
     return MaterialApp(
       home: Scaffold(
-        appBar: new AppBar(
-          title: new Text(""),
-          backgroundColor: Colors.redAccent,
-        ),
+        appBar: SearchBar(
+            defaultBar: AppBar(
+              title: Text('Home'),
+          backgroundColor: Colors.white,
+          leading: new Padding(
+            padding: const EdgeInsets.all(0.0),
+            child: 
+               Icon(
+              Icons.menu,
+              color: Colors.grey,
+            ),
+            
+           
+          ),
+        )),
         backgroundColor: Colors.white,
         drawer: new Drawer(
           child: new ListView(
@@ -77,7 +238,7 @@ class _MyAppState extends State<MyApp> {
                         fit: BoxFit.fill)),
               ),
               new ListTile(
-                  title: new Text(""),
+                  title: new Text("Profil"),
                   trailing: new Icon(Icons.arrow_upward),
                   onTap: () {
                     /*igator.of(context).pop();
@@ -102,15 +263,59 @@ class _MyAppState extends State<MyApp> {
         body: Center(
           child: Builder(
             builder: (BuildContext context) {
-              return Container(child: Text('dsdsds'),) ;
+              return _buildBody(context);
+              
             },
           ),
         ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _scan(),
-          tooltip: 'Take a Photo',
-          child: const Icon(Icons.camera_alt),
+
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        child: Row(
+          mainAxisSize: MainAxisSize.max,
+          children: <Widget>[
+            Container(
+              margin: EdgeInsets.only(left: 50),
+              child: IconButton(
+                icon: Icon(
+                  Icons.home,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  
+                },
+              ),
+            ),
+            Expanded(child: SizedBox()),
+            Container(
+              margin: EdgeInsets.only(right: 50),
+              child: IconButton(
+                icon: Icon(
+                  Icons.person,
+                  color: Colors.black,
+                ),
+                onPressed: () {
+                  Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) =>
+                            details_page()
+                                ),
+                      );
+               
+                },
+              ),
+            )
+          ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => {_scan(context)},
+        tooltip: 'Take a Photo',
+        child: const Icon(Icons.camera_alt),
+      ),
       ),
     );
   }
@@ -123,7 +328,6 @@ class _MyAppState extends State<MyApp> {
         child: Column(
           children: <Widget>[
             Container(
-              
               padding: EdgeInsets.symmetric(horizontal: 10, vertical: 9),
               decoration: BoxDecoration(
                 color: Colors.black12,
@@ -216,31 +420,76 @@ class _MyAppState extends State<MyApp> {
     );
   }
 
-
-  Future _scan() async {
-    int i =0;
+  Future<String> _scan(BuildContext context) async {
+    int i = 0;
+    bool checked;
     String barcode = await scanner.scan();
-    /*if (barcode == null) {
-      print('nothing return.');
-    } else {
-      this._outputController.text = barcode;
-     
-     print(barcode.split(" ")[0]+"/"+barcode.split(" ")[1]+"/"+barcode.split(" ")[2]);
-      Firestore.instance
-          .collection('bus').document(barcode.split(" ")[0]).collection('seats').document(barcode.split(" ")[2])
-          .updateData({
-        'num': int.parse(barcode.split(" ")[1]),
-        'primaryRes': true,
-        'finalRes': true
-      });
-     
-          
-      
-          
-          
-        
-         
-    }*/
+    DateTime startTime = DateTime(2020, 3, 06, 16, 30);
+    DateTime endTime = DateTime(2020, 3, 06, 17, 30);
+    String tache = "IsChecked";
+    final currentTime = DateTime.now();
+
+    if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
+      if (barcode == null) {
+        print('nothing return.');
+      } else {
+        this._outputController.text = barcode;
+
+        DocumentReference documentReference =
+            Firestore.instance.collection("Praticipant").document(barcode);
+        documentReference.get().then((datasnapshot) {
+          if (datasnapshot.exists) {
+            checked = datasnapshot.data['IsChecked'];
+
+            if (checked) {
+              SnackBar sk = SnackBar(content: Text('Error'));
+            } else {
+              createPopUp(context);
+              Firestore.instance
+                  .collection('Praticipant')
+                  .document(barcode)
+                  .updateData({
+                'IsChecked': true,
+              });
+            }
+          } else {
+            print("No such user");
+          }
+        });
+      }
+    }
+    startTime = DateTime(2020, 3, 06, 16, 30);
+    endTime = DateTime(2020, 3, 06, 19, 30);
+    tache = "Breakfest";
+
+    if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
+      if (barcode == null) {
+        print('nothing return.');
+      } else {
+        this._outputController.text = barcode;
+
+        DocumentReference documentReference =
+            Firestore.instance.collection("Praticipant").document(barcode);
+        documentReference.get().then((datasnapshot) {
+          if (datasnapshot.exists) {
+            checked = datasnapshot.data[tache];
+
+            if (checked) {
+            } else {
+              Firestore.instance
+                  .collection('Praticipant')
+                  .document(barcode)
+                  .updateData({
+                tache: true,
+              });
+            }
+          } else {
+            print("No such user");
+          }
+        });
+      }
+    }
+    return tache;
   }
 
   Future _scanPhoto() async {
@@ -252,8 +501,6 @@ class _MyAppState extends State<MyApp> {
     String barcode = await scanner.scanPath(path);
     this._outputController.text = barcode;
   }
-
-
 
   Future _generateBarCode(String inputCode) async {
     Uint8List result = await scanner.generateBarCode(inputCode);
@@ -281,18 +528,27 @@ Future<void> _ackAlert(BuildContext context) {
     },
   );
 }
-class Seats {
-  /*final int num;
-  final bool primaryRes;
-  final bool finalRes;
+
+class Record{
+ final String nom;
+ final String role;
+ final String status;
+ final String organization;
   final DocumentReference reference;
-  Seats.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['num'] != null),
-        assert(map['primaryRes'] != null),
-        assert(map['finalRes'] != null),
-        num = map['num'],
-        primaryRes = map['primaryRes'],
-        finalRes = map['finalRes'];
-  Seats.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);*/
+
+  Record.fromMap(Map<String, dynamic> map, {this.reference})
+      : assert(map['nom'] != null),
+        assert(map['role'] != null),
+        assert(map['status'] != null),
+        assert(map['organization'] != null),
+        nom = map['nom'],
+        role = map['role'],
+        status = map['status'],
+        organization = map['organization'];
+
+  Record.fromSnapshot(DocumentSnapshot snapshot)
+      : this.fromMap(snapshot.data, reference: snapshot.reference);
+
+  @override
+  String toString() => "Record<>";
 }
