@@ -1,16 +1,33 @@
-# hackin
+## BoxEvent
 
-A new Flutter project.
+A Flutter application, developed especially to scientific events, that :
+  - Make organizer's life easier by allowing them to manage events automatically.
+  - Give participants a better experience by keeping them updated on what is happening in the event
+  
+## Testing
+Clone the source locally.
+On a working flutter envirment :
+  
+```sh
+$ flutter pakages get
+```
+then :
+  
+```sh
+$ flutter run 
+```
 
-## Getting Started
+## Features
 
-This project is a starting point for a Flutter application.
+- [x] CheckIn with QR code
+- [x] Organisers list and info
+- [x] Participant list and info
+- [ ] Check restoration , workshops , conferences with QR Code
+- [ ] Report a problem to organisers
+- [ ] Organisers communication system (optional)
+- [ ] Event Agenda
+- [ ] Notification system
 
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Built with
+  - Flutter 
+  - Firebase firestore
