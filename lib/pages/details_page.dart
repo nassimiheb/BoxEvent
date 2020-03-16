@@ -79,8 +79,12 @@ class _details_pageState extends State<details_page> {
                   height: 150,
                   width: 150,
                   child: CircleAvatar(
-                    backgroundColor: Colors.brown.shade800,
-                    child: Text('AH'),
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      
+                      child:Image.asset('assets/men.jpg'),
+          
+        ), 
                   ))),
           Container(
             margin: EdgeInsets.only(top: 20, bottom: 20),
@@ -135,7 +139,7 @@ class _details_pageState extends State<details_page> {
           borderRadius: BorderRadius.circular(5.0),
         ),
         child: ListTile(
-          title: Text('Ta'),
+          title: Text('Activité'),
           trailing: Text(record.ischecked.toString()),
           onTap: () {},
         ),

@@ -49,12 +49,9 @@ class _MyAppState extends State<MyApp> {
       content:
           'Le scanne du Code QR est bien effectuer. Voulez-vous confirmer ? ( Cette action est irriversible )',
       actions: [
+       
         popup.button(
-          label: 'NON',
-          onPressed: Navigator.of(context).pop,
-        ),
-        popup.button(
-          label: 'OUI',
+          label: 'DONE',
           onPressed: Navigator.of(context).pop,
         ),
       ],
@@ -127,8 +124,12 @@ class _MyAppState extends State<MyApp> {
                   height: 100,
                   width: 100,
                   child: CircleAvatar(
-                    backgroundColor: Colors.brown.shade800,
-                    child: Text('AH'),
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      
+                      child:Image.asset('assets/men.jpg'),
+          
+        ), 
                   ))),
           
           Container(
@@ -424,8 +425,8 @@ Widget _buildBody(BuildContext context) {
     int i = 0;
     bool checked;
     String barcode = await scanner.scan();
-    DateTime startTime = DateTime(2020, 3, 06, 16, 30);
-    DateTime endTime = DateTime(2020, 3, 06, 17, 30);
+    DateTime startTime = DateTime(2020, 3, 07, 12, 00);
+    DateTime endTime = DateTime(2020, 3, 07, 17, 30);
     String tache = "IsChecked";
     final currentTime = DateTime.now();
 

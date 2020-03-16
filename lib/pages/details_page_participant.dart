@@ -72,17 +72,19 @@ class _details_participant extends State<details_participant > {
         children: <Widget>[
           Container(
               margin: EdgeInsets.fromLTRB(0, 20, 0, 20),
-              child: Text(
-                'Organisateur',
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
-              )),
+              ),
           Center(
               child: Container(
                   height: 150,
                   width: 150,
                   child: CircleAvatar(
-                    backgroundColor: Colors.brown.shade800,
-                    child: Text('AH'),
+                   
+                    backgroundColor: Colors.transparent,
+                    child: ClipOval(
+                      
+                      child:Image.asset('assets/men.jpg'),
+          
+        ), 
                   ))),
           Container(
             margin: EdgeInsets.only(top: 20, bottom: 20),

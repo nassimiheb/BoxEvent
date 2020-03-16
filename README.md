@@ -9,7 +9,7 @@ Clone the source locally.
 On a working flutter environment:
   
 ```sh
-$ flutter pakages get
+$ flutter packages get
 ```
 then :
   
