@@ -6,7 +6,7 @@ A Flutter application, developed especially to scientific events, that :
   
 ## Testing
 Clone the source locally.
-On a working flutter envirment :
+On a working flutter environment:
   
 ```sh
 $ flutter pakages get
@@ -30,4 +30,4 @@ $ flutter run
 
 ## Built with
   - Flutter 
-  - Firebase firestore
+  - Firebase Firestore
