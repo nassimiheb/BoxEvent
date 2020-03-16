@@ -16,6 +16,7 @@ then :
 ```sh
 $ flutter run 
 ```
+(may take time in first run)
 
 ## Features
 
