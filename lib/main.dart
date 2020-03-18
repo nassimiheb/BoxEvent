@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_beautiful_popup/main.dart';
 import 'package:hackin/pages/details_page.dart';
@@ -104,8 +104,13 @@ class _MyAppState extends State<MyApp> {
 
 
 
- Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final record = Record.fromSnapshot(data);
+ Widget _buildListItem(BuildContext context, String/*shouldnt be String it should be the type of the document that we bring fromDB*/ data) {
+    
+    /*Participant info from DB*/
+    final String nom="";
+    final String role="";
+    final String status="";
+     final String organization="";
 
     return 
        
@@ -141,39 +146,39 @@ class _MyAppState extends State<MyApp> {
             Row(children: <Widget>[
               Icon(Icons.person),
               SizedBox(width: 4,),
-              Text(record.nom,style: TextStyle(fontWeight: FontWeight.w500),)
+              Text(nom,style: TextStyle(fontWeight: FontWeight.w500),)
             ]),
             Row(children: <Widget>[
               Icon(Icons.person,color: Colors.grey,),
               SizedBox(width: 4,),
-              Text(record.role,style: TextStyle(color: Colors.grey),)
+              Text(role,style: TextStyle(color: Colors.grey),)
             ]),
             Row(children: <Widget>[
               Icon(Icons.person,color: Colors.grey,),
               SizedBox(width: 4,),
-              Text(record.status,style: TextStyle(color: Colors.grey),)
+              Text(status,style: TextStyle(color: Colors.grey),)
             ]),Row(children: <Widget>[
               Icon(Icons.school,color: Colors.grey,),
               SizedBox(width: 4,),
-              Text(record.organization,style: TextStyle(color: Colors.grey),)
+              Text(organization,style: TextStyle(color: Colors.grey),)
             ])
           ],))
        ])
    ),
        onTap: (){
-         print(record.nom);
+         print(nom);
           Navigator.push(
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                            details_participant(nom: record.nom,)
+                            details_participant(nom: nom,)
                                 ),
                       );
        },)
      ;
   }  
  
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List snapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
@@ -182,10 +187,10 @@ class _MyAppState extends State<MyApp> {
 
 
 Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('Participants').snapshots(),
+    return StreamBuilder/*difine the type*/(
+      stream: null/*stream of participant*//*will not show anything now*/,
       builder: (context, snapshot) {
-        if (!snapshot.hasData) return LinearProgressIndicator();
+        if (!snapshot.hasData) return CircularProgressIndicator();
 
         return _buildList(context, snapshot.data.documents);
       },
@@ -421,13 +426,15 @@ Widget _buildBody(BuildContext context) {
     );
   }
 
-  Future<String> _scan(BuildContext context) async {
+   _scan(BuildContext context) async {
     int i = 0;
     bool checked;
     String barcode = await scanner.scan();
+
     DateTime startTime = DateTime(2020, 3, 07, 12, 00);
     DateTime endTime = DateTime(2020, 3, 07, 17, 30);
-    String tache = "IsChecked";
+   
+   
     final currentTime = DateTime.now();
 
     if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
@@ -435,121 +442,15 @@ Widget _buildBody(BuildContext context) {
         print('nothing return.');
       } else {
         this._outputController.text = barcode;
-
-        DocumentReference documentReference =
-            Firestore.instance.collection("Praticipant").document(barcode);
-        documentReference.get().then((datasnapshot) {
-          if (datasnapshot.exists) {
-            checked = datasnapshot.data['IsChecked'];
-
-            if (checked) {
-              SnackBar sk = SnackBar(content: Text('Error'));
-            } else {
-              createPopUp(context);
-              Firestore.instance
-                  .collection('Praticipant')
-                  .document(barcode)
-                  .updateData({
-                'IsChecked': true,
-              });
-            }
-          } else {
-            print("No such user");
-          }
-        });
+        /*Add check in here*/
       }
     }
-    startTime = DateTime(2020, 3, 06, 16, 30);
-    endTime = DateTime(2020, 3, 06, 19, 30);
-    tache = "Breakfest";
-
-    if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
-      if (barcode == null) {
-        print('nothing return.');
-      } else {
-        this._outputController.text = barcode;
-
-        DocumentReference documentReference =
-            Firestore.instance.collection("Praticipant").document(barcode);
-        documentReference.get().then((datasnapshot) {
-          if (datasnapshot.exists) {
-            checked = datasnapshot.data[tache];
-
-            if (checked) {
-            } else {
-              Firestore.instance
-                  .collection('Praticipant')
-                  .document(barcode)
-                  .updateData({
-                tache: true,
-              });
-            }
-          } else {
-            print("No such user");
-          }
-        });
-      }
-    }
-    return tache;
+   
+  
   }
 
-  Future _scanPhoto() async {
-    String barcode = await scanner.scanPhoto();
-    this._outputController.text = barcode;
-  }
 
-  Future _scanPath(String path) async {
-    String barcode = await scanner.scanPath(path);
-    this._outputController.text = barcode;
-  }
-
-  Future _generateBarCode(String inputCode) async {
-    Uint8List result = await scanner.generateBarCode(inputCode);
-    this.setState(() => this.bytes = result);
-  }
 }
 
-Future<void> _ackAlert(BuildContext context) {
-  print("###################################################");
-  return showDialog<void>(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: Text('Not in stock'),
-        content: const Text('This item is no longer available'),
-        actions: <Widget>[
-          FlatButton(
-            child: Text('Ok'),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ),
-        ],
-      );
-    },
-  );
-}
 
-class Record{
- final String nom;
- final String role;
- final String status;
- final String organization;
-  final DocumentReference reference;
 
-  Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['nom'] != null),
-        assert(map['role'] != null),
-        assert(map['status'] != null),
-        assert(map['organization'] != null),
-        nom = map['nom'],
-        role = map['role'],
-        status = map['status'],
-        organization = map['organization'];
-
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-  @override
-  String toString() => "Record<>";
-}

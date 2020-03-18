@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 
 class details_participant  extends StatefulWidget {
@@ -12,8 +12,8 @@ class details_participant  extends StatefulWidget {
 class _details_participant extends State<details_participant > {
 
     Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('Praticipant').where('nom', isEqualTo: widget.nom).snapshots(),
+    return StreamBuilder/*difine the type*/(
+      stream:null/*straem from DB using nom or an ID to get the other info the participant*/,
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
@@ -122,15 +122,15 @@ class _details_participant extends State<details_participant > {
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List snapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final record = Record.fromSnapshot(data);
+  Widget _buildListItem(BuildContext context, String /*see the comment on the same fonction in main.dart*/ data) {
+    final bool ischecked=true;/*from DB*/
 
     return 
        Container(
@@ -140,28 +140,11 @@ class _details_participant extends State<details_participant > {
         ),
         child: ListTile(
           title: Text('Check In'),
-          trailing: record.ischecked ?Icon(Icons.check):Icon(Icons.close),
+          trailing: ischecked ?Icon(Icons.check):Icon(Icons.close),
           onTap: () {},
         ),
      
     );
   }
   }
-  class Record {
-  final String nom;
-  final bool ischecked;
-  final DocumentReference reference;
 
-  Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['IsChecked'] != null),
-      assert(map['nom'] != null),
-      ischecked = map['IsChecked'],
-      nom = map['nom'];
-        
-
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-  @override
-  String toString() => "Record<>";
-}

@@ -1,4 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hackin/src/SearchBar.dart';
@@ -10,8 +10,8 @@ class details_page extends StatefulWidget {
 
 class _details_pageState extends State<details_page> {
   Widget _buildBody(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: Firestore.instance.collection('Praticipant').snapshots(),
+    return StreamBuilder/*define the type <Type>*/(
+      stream: null,
       builder: (context, snapshot) {
         if (!snapshot.hasData) return LinearProgressIndicator();
 
@@ -88,11 +88,11 @@ class _details_pageState extends State<details_page> {
                   ))),
           Container(
             margin: EdgeInsets.only(top: 20, bottom: 20),
-            child: Text('Razof Khaled', style: TextStyle(fontSize: 18)),
+            child: Text('Razof Khaled'/*<---from DB*/, style: TextStyle(fontSize: 18)),
           ),
           Container(
             margin: EdgeInsets.only(bottom: 20),
-            child: Text('Département Logistic', style: TextStyle(fontSize: 16)),
+            child: Text('Département Logistic'/*<---from DB*/, style: TextStyle(fontSize: 16)),
           ),
           Divider(
             height: 30,
@@ -122,15 +122,15 @@ class _details_pageState extends State<details_page> {
     );
   }
 
-  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+  Widget _buildList(BuildContext context, List/*see the comment on the same fonction in main.dart*/ snapshot) {
     return ListView(
       padding: const EdgeInsets.only(top: 20.0),
       children: snapshot.map((data) => _buildListItem(context, data)).toList(),
     );
   }
 
-  Widget _buildListItem(BuildContext context, DocumentSnapshot data) {
-    final record = Record.fromSnapshot(data);
+  Widget _buildListItem(BuildContext context, String/*see the comment on the same fonction in main.dart*/ data) {
+    final bool task1 =true;/*getting the tasks of the orgniser from DB*/
 
     return 
        Container(
@@ -140,7 +140,7 @@ class _details_pageState extends State<details_page> {
         ),
         child: ListTile(
           title: Text('Activité'),
-          trailing: Text(record.ischecked.toString()),
+          trailing: Text(task1.toString()),
           onTap: () {},
         ),
      
@@ -148,17 +148,4 @@ class _details_pageState extends State<details_page> {
   }
 }
 
-class Record {
-  final bool ischecked;
-  final DocumentReference reference;
 
-  Record.fromMap(Map<String, dynamic> map, {this.reference})
-      : assert(map['IsChecked'] != null),
-        ischecked = map['IsChecked'];
-
-  Record.fromSnapshot(DocumentSnapshot snapshot)
-      : this.fromMap(snapshot.data, reference: snapshot.reference);
-
-  @override
-  String toString() => "Record<>";
-}
