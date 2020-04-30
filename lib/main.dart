@@ -7,7 +7,7 @@ import 'package:flutter_beautiful_popup/main.dart';
 import 'package:hackin/pages/details_page.dart';
 import 'package:hackin/pages/details_page_participant.dart';
 import 'package:image_gallery_saver/image_gallery_saver.dart';
-
+import 'controllers/dataHelper.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 
 import 'src/SearchBar.dart';
@@ -217,55 +217,6 @@ Widget _buildBody(BuildContext context) {
           ),
         )),
         backgroundColor: Colors.white,
-        drawer: new Drawer(
-          child: new ListView(
-            children: <Widget>[
-              new UserAccountsDrawerHeader(
-                accountEmail: new Text("hi_aouadj@esi.dz"),
-                accountName: new Text("Nassim"),
-                currentAccountPicture: new GestureDetector(
-                  child: new CircleAvatar(
-                    backgroundImage: new NetworkImage(currentProfilePic),
-                  ),
-                  onTap: () => print("This is your current account."),
-                ),
-                otherAccountsPictures: <Widget>[
-                  new GestureDetector(
-                    child: new CircleAvatar(
-                      backgroundImage: new NetworkImage(otherProfilePic),
-                    ),
-                    onTap: () => switchAccounts(),
-                  ),
-                ],
-                decoration: new BoxDecoration(
-                    image: new DecorationImage(
-                        image: new NetworkImage(
-                            "https://img00.deviantart.net/35f0/i/2015/018/2/6/low_poly_landscape__the_river_cut_by_bv_designs-d8eib00.jpg"),
-                        fit: BoxFit.fill)),
-              ),
-              new ListTile(
-                  title: new Text("Profil"),
-                  trailing: new Icon(Icons.arrow_upward),
-                  onTap: () {
-                    /*igator.of(context).pop();
-                Navigator.of(context).push(new MaterialPNavageRoute(builder: (BuildContext context) => new Page("First Page")));*/
-                  }),
-              new ListTile(
-                  title: new Text(""),
-                  trailing: new Icon(Icons.arrow_right),
-                  onTap: () {
-                    /* Navigator.of(context).pop();
-                Navigator.of(context).push(new MaterialPageRoute(builder: (BuildContext context) => new Page("Second Page")));*/
-                  }),
-              new Divider(),
-              new ListTile(
-                title: new Text("Cancel"),
-                trailing: new Icon(Icons.cancel),
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        ),
         body: Center(
           child: Builder(
             builder: (BuildContext context) {
@@ -436,13 +387,14 @@ Widget _buildBody(BuildContext context) {
    
    
     final currentTime = DateTime.now();
-
+     DataHelper databaseHelper = new DataHelper();
     if (currentTime.isAfter(startTime) && currentTime.isBefore(endTime)) {
       if (barcode == null) {
         print('nothing return.');
       } else {
         this._outputController.text = barcode;
         /*Add check in here*/
+        databaseHelper.editarProduct(barcode, "checkIn");
       }
     }
    
@@ -451,6 +403,13 @@ Widget _buildBody(BuildContext context) {
 
 
 }
+
+
+
+
+
+
+
 
 
 
